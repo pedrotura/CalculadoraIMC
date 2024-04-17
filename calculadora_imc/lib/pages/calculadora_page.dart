@@ -8,6 +8,11 @@ import '../components/slider_altura.dart';
 
 import 'package:flutter/material.dart';
 
+enum Genero {
+  masculino,
+  feminino
+}
+
 class CalculadoraPage extends StatefulWidget {
   const CalculadoraPage({super.key});
 
@@ -16,6 +21,9 @@ class CalculadoraPage extends StatefulWidget {
 }
 
 class _CalculadoraPageState extends State<CalculadoraPage> {
+  Genero? generoSelecionado;
+  int altura = 120;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,47 +31,79 @@ class _CalculadoraPageState extends State<CalculadoraPage> {
         title: const Text('Calculadora IMC'),
         centerTitle: true,
       ),
-      body: const Column(
+      body: Column(
         children: [
           Expanded(
             child: Row(
               children: [
                 Expanded(
-                  child: CustomCard(
-                    active: false,
-                    child: GenderContent(
-                      icon: Icons.male,
-                      label: 'Masculino',
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        generoSelecionado = Genero.masculino;
+                      });
+                    },
+                    child: CustomCard(
+                      active: generoSelecionado == Genero.masculino,
+                      child: GenderContent(
+                        icon: Icons.male,
+                        label: 'Masculino',
+                      ),
                     ),
                   ),
                 ),
                 Expanded(
-                  child: CustomCard(
-                    active: true,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        generoSelecionado = Genero.feminino;
+                      });
+                    },
+                    child: CustomCard(
+                    active: generoSelecionado == Genero.feminino,
                     child: GenderContent(
                       icon: Icons.female,
                       label: 'Feminino',
                     ),
                   ),
                 ),
+                  ),
               ],
             ),
           ),
           Expanded(
-            child: CustomCard(),
+            child: CustomCard(
+              child: SliderAltura(
+                onChanged: (double novaAltura) {
+                  setState(() {
+                    altura = novaAltura.toInt();
+
+                  });
+                },
+                altura: altura,
+              ),
+            ),
           ),
           Expanded(
             child: Row(
               children: [
                 Expanded(
-                  child: CustomCard(),
+                  child: CustomCard(
+                    child: Contador(),
+                  ),
                 ),
                 Expanded(
-                  child: CustomCard(),
+                  child: CustomCard(
+                    child: Contador(),
+                  ),
                 ),
               ],
             ),
           ),
+          BottomButton(
+              buttonTitle: 'Calcular IMC',
+              onPressed: null,
+          )
         ],
       ),
     );
